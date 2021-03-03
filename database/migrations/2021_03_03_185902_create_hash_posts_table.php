@@ -19,7 +19,7 @@ class CreateHashPostsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('hashes')) {
+        if (!Schema::hasTable('hash_post')) {
             Schema::create('hash_post', function (Blueprint $table) {
                 $table->id();
                 $table->unsignedBigInteger('post_id')->comment('ID of the post');

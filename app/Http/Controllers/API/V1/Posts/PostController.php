@@ -14,6 +14,7 @@ use App\Http\Requests\API\V1\Post\PostIndexRequest;
 use App\Http\Requests\API\V1\Post\PostStoreRequest;
 use App\Http\Requests\API\V1\Post\PostUpdateRequest;
 use App\Http\Resources\API\V1\Post\PostDeleteResource;
+use App\Http\Resources\API\V1\Post\PostIncrementViewResource;
 use App\Http\Resources\API\V1\Post\PostIndexResource;
 use App\Http\Resources\API\V1\Post\PostShowResource;
 use App\Http\Resources\API\V1\Post\PostStoreResource;
@@ -105,9 +106,21 @@ class PostController extends Controller
      */
     public function destroy(int $id): PostDeleteResource
     {
-        DB::table('users')->where('id', $id)->delete();
+        DB::table('posts')->where('id', $id)->delete();
 
         return new PostDeleteResource(['message' => self::DELETED_POST]);
+    }
+
+    /**
+     * @param  int  $id
+     *
+     * @return PostIncrementViewResource
+     */
+    public function incrementView(int $id): PostIncrementViewResource
+    {
+        $post=DB::table('posts')->where('id', $id)->increment('counter');
+
+        return new PostIncrementViewResource([$post]);
     }
 
     /**

@@ -1,22 +1,15 @@
 <?php
+declare(strict_types=1);
 
-use Illuminate\Http\Request;
+/**
+ * @author Artuikh Vladimir
+ * @copyright 2021 Artuikh Vladimir, vladimir.artjukh@gmail.com
+ */
+
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\V1\Posts\PostController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
+Route::post('post/view/increment/{id}', [PostController::class, 'incrementView'])->name('v1.api.post.increment');
 Route::apiResource('post', PostController::class)
     ->names('v1.api.post');

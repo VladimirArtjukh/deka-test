@@ -1,10 +1,16 @@
 <?php
+declare(strict_types=1);
+
+/**
+ * @author Artjukh Volodimir
+ * @copyright 2021 Artjukh Volodimir (vladimir.artjukh@gmail.com)
+ */
 
 namespace App\Http\Requests\API\V1\Post;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\ApiFormRequest;
 
-class PostIndexRequest extends FormRequest
+class PostIndexRequest extends ApiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +30,7 @@ class PostIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'hash.*' => 'integer|min:1|exists:hashes,id'
         ];
     }
 }

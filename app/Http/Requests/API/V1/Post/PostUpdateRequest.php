@@ -1,10 +1,16 @@
 <?php
+declare(strict_types=1);
+
+/**
+ * @author Artjukh Volodimir
+ * @copyright 2021 Artjukh Volodimir (vladimir.artjukh@gmail.com)
+ */
 
 namespace App\Http\Requests\API\V1\Post;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\ApiFormRequest;
 
-class PostUpdateRequest extends FormRequest
+class PostUpdateRequest extends ApiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +19,7 @@ class PostUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +30,9 @@ class PostUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'title'  => 'string|min:1|max:255',
+            'text'   => 'string|min:1',
+            'hash.*' => 'integer|min:1|exists:hashes,id'
         ];
     }
 }

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @copyright 2021 Artuikh Vladimir, vladimir.artjukh@gmail.com
  */
 
-namespace App\Http\Controllers\Posts;
+namespace App\Http\Controllers\API\V1\Posts;
 
 use App\Http\Controllers\Controller;
 

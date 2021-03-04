@@ -11,13 +11,22 @@ namespace App\Http\Controllers\API\V1\Posts;
 use App\Facades\Posts\FilterFacade;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\V1\Post\PostIndexRequest;
+use App\Http\Requests\API\V1\Post\PostStoreRequest;
+use App\Http\Requests\API\V1\Post\PostUpdateRequest;
+use App\Http\Resources\API\V1\Post\PostDeleteResource;
 use App\Http\Resources\API\V1\Post\PostIndexResource;
+use App\Http\Resources\API\V1\Post\PostShowResource;
+use App\Http\Resources\API\V1\Post\PostStoreResource;
+use App\Http\Resources\API\V1\Post\PostUpdateResource;
 use App\Models\Post;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
+    const CREATED_POST = 'Post was created';
+    const UPDATED_POST = 'Post was updated';
+    const DELETED_POST = 'Post was deleted';
+
     /**
      * @param  PostIndexRequest  $request
      *
@@ -25,7 +34,8 @@ class PostController extends Controller
      */
     public function index(PostIndexRequest $request): PostIndexResource
     {
-        $postId=FilterFacade::filter($request->all());
+        $postId = $this->filterProduct($request->all());
+
         $post = DB::table('posts')
             ->select('id', 'title', 'slug')
             ->whereIn('id', $postId)
@@ -34,23 +44,100 @@ class PostController extends Controller
         return new PostIndexResource($post);
     }
 
-    public function store(Request $request)
+    /**
+     * @param  PostStoreRequest  $request
+     *
+     * @return PostStoreResource
+     */
+    public function store(PostStoreRequest $request): PostStoreResource
     {
-        //
+        $post = DB::table('posts')->insertGetId([
+            'title'      => $request->title,
+            'counter'    => 0,
+            'slug'       => getSlug((string)$request->title, 'posts', 'slug'),
+            'text'       => $request->text,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        $this->saveHashPost($request->all(), $post);
+
+        return new PostStoreResource(['message' => self::CREATED_POST]);
     }
 
-    public function show($id)
+    /**
+     * @param  int  $id
+     *
+     * @return PostShowResource
+     */
+    public function show(int $id): PostShowResource
     {
-        //
+        $result = DB::table('posts')->find($id);
+
+        return new PostShowResource($result);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * @param  PostUpdateRequest  $request
+     * @param  int  $id
+     *
+     * @return PostUpdateResource
+     */
+    public function update(PostUpdateRequest $request, int $id): PostUpdateResource
     {
-        //
+        $post = DB::table('posts')
+            ->where('id', $id)
+            ->update([
+                'title'      => $request->title,
+                'slug'       => getSlug((string)$request->title, 'posts', 'slug'),
+                'text'       => $request->text,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        $this->saveHashPost($request->all(), $post);
+
+        return new PostUpdateResource(['message' => self::UPDATED_POST]);
     }
 
-    public function destroy($id)
+    /**
+     * @param  int  $id
+     *
+     * @return PostDeleteResource
+     */
+    public function destroy(int $id): PostDeleteResource
     {
-        //
+        DB::table('users')->where('id', $id)->delete();
+
+        return new PostDeleteResource(['message' => self::DELETED_POST]);
+    }
+
+    /**
+     * @param  array  $data
+     *
+     * @return mixed
+     */
+    protected function filterProduct(array $data)
+    {
+        $result = FilterFacade::filter($data);
+
+        return $result;
+    }
+
+    /**
+     * @param  array  $data
+     * @param  int  $postId
+     */
+    protected function saveHashPost(array $data, int $postId)
+    {
+        DB::table('hash_post')->where('post_id', $postId)->delete();
+        if (isset($data['hash'])) {
+            foreach ($data['hash'] as $hash) {
+                DB::table('hash_post')->insert([
+                    'post_id'    => $postId,
+                    'hash_id'    => $hash,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+        }
     }
 }

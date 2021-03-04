@@ -16,4 +16,5 @@ class Post extends Model
     use HasFactory;
 
     const COUNT_HASHES_OF_POST = 3;
+    const COUNT_PAGINATE = 10;
 }

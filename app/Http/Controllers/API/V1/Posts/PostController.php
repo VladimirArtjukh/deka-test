@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API\V1\Posts;
 
 use App\Facades\Posts\FilterFacade;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\API\V1\Post\PostIndexRequest;
 use App\Http\Requests\API\V1\Post\PostStoreRequest;
 use App\Http\Requests\API\V1\Post\PostUpdateRequest;
@@ -19,14 +18,14 @@ use App\Http\Resources\API\V1\Post\PostIndexResource;
 use App\Http\Resources\API\V1\Post\PostShowResource;
 use App\Http\Resources\API\V1\Post\PostStoreResource;
 use App\Http\Resources\API\V1\Post\PostUpdateResource;
-use App\Models\Post;
 use Illuminate\Support\Facades\DB;
 
-class PostController extends Controller
+class PostController extends PostBaseController
 {
     const CREATED_POST = 'Post was created';
     const UPDATED_POST = 'Post was updated';
     const DELETED_POST = 'Post was deleted';
+    const COUNT_PAGINATE = 10;
 
     /**
      * @param  PostIndexRequest  $request
@@ -40,7 +39,7 @@ class PostController extends Controller
         $post = DB::table('posts')
             ->select('id', 'title', 'slug')
             ->whereIn('id', $postId)
-            ->paginate(Post::COUNT_PAGINATE);
+            ->paginate(self::COUNT_PAGINATE);
 
         return new PostIndexResource($post);
     }
@@ -118,7 +117,7 @@ class PostController extends Controller
      */
     public function incrementView(int $id): PostIncrementViewResource
     {
-        $post=DB::table('posts')->where('id', $id)->increment('counter');
+        $post = DB::table('posts')->where('id', $id)->increment('counter');
 
         return new PostIncrementViewResource([$post]);
     }

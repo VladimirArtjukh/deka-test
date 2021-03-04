@@ -30,11 +30,11 @@ class PostFactory extends Factory
     public function definition()
     {
         $created_at = $this->faker->dateTimeBetween('-3 months', '-1 days');
-
+        $title=$this->faker->realText($maxNbChars = 200, $indexSize = 2);
         return [
-            'title'      => $this->faker->realText($maxNbChars = 200, $indexSize = 2),
+            'title'      => $title,
             'counter'    => $this->faker->numberBetween(0, 1000),
-            'slug'       => Str::slug($this->faker->words($nb = 3, $asText = true), '-'),
+            'slug'       => getSlug((string)$title, 'posts', 'slug'),
             'text'       => $this->faker->realText($this->faker->numberBetween(1000, 5000)),
             'created_at' => $created_at,
             'updated_at' => $created_at

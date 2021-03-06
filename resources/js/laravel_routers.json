@@ -1,1 +1,24 @@
-{"debugbar.openhandler":"_debugbar\/open","debugbar.clockwork":"_debugbar\/clockwork\/{id}","debugbar.telescope":"_debugbar\/telescope\/{id}","debugbar.assets.css":"_debugbar\/assets\/stylesheets","debugbar.assets.js":"_debugbar\/assets\/javascript","debugbar.cache.delete":"_debugbar\/cache\/{key}\/{tags?}","v1.api.post.get.slug":"api\/post\/get\/by\/slug\/{id}","v1.api.post.increment":"api\/post\/view\/increment\/{id}","v1.api.post.index":"api\/post","v1.api.post.store":"api\/post","v1.api.post.show":"api\/post\/{post}","v1.api.post.update":"api\/post\/{post}","v1.api.post.destroy":"api\/post\/{post}","v1.api.hash.index":"api\/hash","v1.api.hash.store":"api\/hash","post.index":"post","post.create":"post\/create","post.store":"post","post.show":"post\/{post}","post.edit":"post\/{post}\/edit","post.update":"post\/{post}","post.destroy":"post\/{post}"}
+{
+  "debugbar.openhandler": "_debugbar\/open",
+  "debugbar.clockwork": "_debugbar\/clockwork\/{id}",
+  "debugbar.telescope": "_debugbar\/telescope\/{id}",
+  "debugbar.assets.css": "_debugbar\/assets\/stylesheets",
+  "debugbar.assets.js": "_debugbar\/assets\/javascript",
+  "debugbar.cache.delete": "_debugbar\/cache\/{key}\/{tags?}",
+  "v1.api.post.get.slug": "api\/post\/get\/by\/slug\/{id}",
+  "v1.api.post.increment": "api\/post\/view\/increment\/{id}",
+  "v1.api.post.index": "api\/post",
+  "v1.api.post.store": "api\/post",
+  "v1.api.post.show": "api\/post\/{post}",
+  "v1.api.post.update": "api\/post\/{post}",
+  "v1.api.post.destroy": "api\/post\/{post}",
+  "v1.api.hash.index": "api\/hash",
+  "v1.api.hash.store": "api\/hash",
+  "post.index": "post",
+  "post.create": "post\/create",
+  "post.store": "post",
+  "post.show": "post\/{post}",
+  "post.edit": "post\/{post}\/edit",
+  "post.update": "post\/{post}",
+  "post.destroy": "post\/{post}"
+}

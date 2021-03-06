@@ -1,5 +1,6 @@
 @extends('layout.app')
-
 @section('content')
-    <post-show-component id="{{$id}}"></post-show-component>
+    <router-view
+            id="{{$id}}"
+    ></router-view>
 @endsection

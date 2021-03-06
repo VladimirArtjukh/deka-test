@@ -65,7 +65,7 @@
       </div>
 
     </div>
-    <span class="btn btn-success btn-block" @click="storePost()">Save</span>
+    <span class="btn btn-success btn-block" @click="updatePost()">Save</span>
   </div>
 </template>
 
@@ -145,10 +145,6 @@ export default {
               this.alertSuccess = true;
               this.alertError = false;
             }
-            this.title = '';
-            this.text = '';
-            this.hash = '';
-
           })
           .catch(error => {
 

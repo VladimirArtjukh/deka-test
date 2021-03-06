@@ -2,6 +2,9 @@ require('./bootstrap');
 
 window.Vue = require('vue').default;
 
+import VueRouter from 'vue-router';
+import routers from './routers';
+Vue.use(VueRouter)
 //Posts
 Vue.component('post-index-component', require('./components/Posts/PostIndexComponent.vue').default);
 Vue.component('post-create-component', require('./components/Posts/PostCreateComponent.vue').default);
@@ -10,4 +13,5 @@ Vue.component('post-edit-component', require('./components/Posts/PostEditCompone
 
 const app = new Vue({
     el: '#app',
+    router: new VueRouter(routers)
 });

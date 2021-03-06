@@ -1,5 +1,4 @@
 @extends('layout.app')
-
 @section('content')
-    <post-create-component></post-create-component>
+    <router-view></router-view>
 @endsection

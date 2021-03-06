@@ -13,6 +13,7 @@ use App\Http\Requests\API\V1\Post\PostIndexRequest;
 use App\Http\Requests\API\V1\Post\PostStoreRequest;
 use App\Http\Requests\API\V1\Post\PostUpdateRequest;
 use App\Http\Resources\API\V1\Post\PostDeleteResource;
+use App\Http\Resources\API\V1\Post\PostGetSlugResource;
 use App\Http\Resources\API\V1\Post\PostIncrementViewResource;
 use App\Http\Resources\API\V1\Post\PostIndexResource;
 use App\Http\Resources\API\V1\Post\PostShowResource;
@@ -34,12 +35,13 @@ class PostController extends PostBaseController
      */
     public function index(PostIndexRequest $request): PostIndexResource
     {
-        $postId = $this->filterProduct($request->all());
+        $postId   = $this->filterProduct($request->all());
+        $paginate = $request->has('paginate') ? $request->paginate : self::COUNT_PAGINATE;
 
         $post = DB::table('posts')
             ->select('id', 'title', 'slug')
             ->whereIn('id', $postId)
-            ->paginate(self::COUNT_PAGINATE);
+            ->paginate($paginate);
 
         return new PostIndexResource($post);
     }
@@ -71,9 +73,21 @@ class PostController extends PostBaseController
      */
     public function show(int $id): PostShowResource
     {
-        $result = DB::table('posts')->find($id);
+        $result = DB::table('posts')->where('id', $id)->get();
 
         return new PostShowResource($result);
+    }
+
+    /**
+     * @param  string  $slug
+     *
+     * @return PostGetSlugResource
+     */
+    public function getBySlug(string $slug): PostGetSlugResource
+    {
+        $result = DB::table('posts')->where('slug', $slug)->get();
+
+        return new PostGetSlugResource ($result);
     }
 
     /**
@@ -93,7 +107,7 @@ class PostController extends PostBaseController
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
-        $this->saveHashPost($request->all(), $post);
+        $this->saveHashPost($request->all(), $id);
 
         return new PostUpdateResource(['message' => self::UPDATED_POST]);
     }

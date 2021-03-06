@@ -30,7 +30,7 @@ class PostIndexRequest extends ApiFormRequest
     public function rules()
     {
         return [
-            'hash.*' => 'integer|min:1|exists:hashes,id'
+           // 'hash.*' => 'integer|min:1|exists:hashes,id'
         ];
     }
 }

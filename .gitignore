@@ -5,6 +5,7 @@
 /public/hot
 /public/storage
 /storage/*.key
+/docker/databases
 /vendor
 .env
 .env.backup

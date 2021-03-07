@@ -9,3 +9,4 @@
 - Open DB `http://localhost:6080/`
 - Create DB for production and testing
 - Install DB table: `php artisan migrate`
+- Go to the site `http://localhost:8080/`

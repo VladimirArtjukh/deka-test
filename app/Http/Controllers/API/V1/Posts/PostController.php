@@ -35,15 +35,21 @@ class PostController extends PostBaseController
      */
     public function index(PostIndexRequest $request): PostIndexResource
     {
-        $postId   = $this->filterProduct($request->all());
-        $paginate = $request->has('paginate') ? $request->paginate : self::COUNT_PAGINATE;
+        try {
+            $postId   = $this->filterProduct($request->all());
+            $paginate = $request->has('paginate') ? $request->paginate : self::COUNT_PAGINATE;
 
-        $post = DB::table('posts')
-            ->select('id', 'title', 'slug')
-            ->whereIn('id', $postId)
-            ->paginate($paginate);
+            $result = DB::table('posts')
+                ->select('id', 'title', 'slug')
+                ->whereIn('id', $postId)
+                ->paginate($paginate);
+        } catch (\Exception $ex) {
+            $result = [
+                'errors' => ['error' => $ex->getMessage()]
+            ];
+        }
 
-        return new PostIndexResource($post);
+        return new PostIndexResource($result);
     }
 
     /**
@@ -53,17 +59,24 @@ class PostController extends PostBaseController
      */
     public function store(PostStoreRequest $request): PostStoreResource
     {
-        $post = DB::table('posts')->insertGetId([
-            'title'      => $request->title,
-            'counter'    => 0,
-            'slug'       => getSlug((string)$request->title, 'posts', 'slug'),
-            'text'       => $request->text,
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        $this->saveHashPost($request->all(), $post);
+        try {
+            $post = DB::table('posts')->insertGetId([
+                'title'      => $request->title,
+                'counter'    => 0,
+                'slug'       => getSlug((string)$request->title, 'posts', 'slug'),
+                'text'       => $request->text,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+            $this->saveHashPost($request->all(), $post);
+            $result = ['message' => self::CREATED_POST];
+        } catch (\Exception $ex) {
+            $result = [
+                'errors' => ['error' => $ex->getMessage()]
+            ];
+        }
 
-        return new PostStoreResource(['message' => self::CREATED_POST]);
+        return new PostStoreResource($result);
     }
 
     /**
@@ -73,7 +86,13 @@ class PostController extends PostBaseController
      */
     public function show(int $id): PostShowResource
     {
-        $result = DB::table('posts')->where('id', $id)->get();
+        try {
+            $result = DB::table('posts')->where('id', $id)->get();
+        } catch (\Exception $ex) {
+            $result = [
+                'errors' => ['error' => $ex->getMessage()]
+            ];
+        }
 
         return new PostShowResource($result);
     }
@@ -85,7 +104,13 @@ class PostController extends PostBaseController
      */
     public function getBySlug(string $slug): PostGetSlugResource
     {
-        $result = DB::table('posts')->where('slug', $slug)->get();
+        try {
+            $result = DB::table('posts')->where('slug', $slug)->get();
+        } catch (\Exception $ex) {
+            $result = [
+                'errors' => ['error' => $ex->getMessage()]
+            ];
+        }
 
         return new PostGetSlugResource ($result);
     }
@@ -98,18 +123,25 @@ class PostController extends PostBaseController
      */
     public function update(PostUpdateRequest $request, int $id): PostUpdateResource
     {
-        $post = DB::table('posts')
-            ->where('id', $id)
-            ->update([
-                'title'      => $request->title,
-                'slug'       => getSlug((string)$request->title, 'posts', 'slug'),
-                'text'       => $request->text,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
-        $this->saveHashPost($request->all(), $id);
+        try {
+            DB::table('posts')
+                ->where('id', $id)
+                ->update([
+                    'title'      => $request->title,
+                    'slug'       => getSlug((string)$request->title, 'posts', 'slug'),
+                    'text'       => $request->text,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            $this->saveHashPost($request->all(), $id);
+            $result = ['message' => self::UPDATED_POST];
+        } catch (\Exception $ex) {
+            $result = [
+                'errors' => ['error' => $ex->getMessage()]
+            ];
+        }
 
-        return new PostUpdateResource(['message' => self::UPDATED_POST]);
+        return new PostUpdateResource($result);
     }
 
     /**
@@ -119,9 +151,16 @@ class PostController extends PostBaseController
      */
     public function destroy(int $id): PostDeleteResource
     {
-        DB::table('posts')->where('id', $id)->delete();
+        try {
+            DB::table('posts')->where('id', $id)->delete();
+            $result = ['message' => self::DELETED_POST];
+        } catch (\Exception $ex) {
+            $result = [
+                'errors' => ['error' => $ex->getMessage()]
+            ];
+        }
 
-        return new PostDeleteResource(['message' => self::DELETED_POST]);
+        return new PostDeleteResource($result);
     }
 
     /**
@@ -131,9 +170,16 @@ class PostController extends PostBaseController
      */
     public function incrementView(int $id): PostIncrementViewResource
     {
-        $post = DB::table('posts')->where('id', $id)->increment('counter');
+        try {
+            $count  = DB::table('posts')->where('id', $id)->increment('counter');
+            $result = ['message' => $count];
+        } catch (\Exception $ex) {
+            $result = [
+                'errors' => ['error' => $ex->getMessage()]
+            ];
+        }
 
-        return new PostIncrementViewResource([$post]);
+        return new PostIncrementViewResource($result);
     }
 
     /**
@@ -143,8 +189,13 @@ class PostController extends PostBaseController
      */
     protected function filterProduct(array $data)
     {
+        try {
         $result = FilterFacade::filter($data);
-
+        } catch (\Exception $ex) {
+            $result = [
+                'errors' => ['error' => $ex->getMessage()]
+            ];
+        }
         return $result;
     }
 

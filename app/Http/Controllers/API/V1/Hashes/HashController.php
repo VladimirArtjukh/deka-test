@@ -20,9 +20,15 @@ class HashController extends HashBaseController
     /**
      * @return HashIndexResource
      */
-    public function index()
+    public function index(): HashIndexResource
     {
-        $result = DB::table('hashes')->get();
+        try {
+            $result = DB::table('hashes')->get();
+        } catch (\Exception $ex) {
+            $result = [
+                'errors' => ['error' => $ex->getMessage()]
+            ];
+        }
 
         return new HashIndexResource($result);
     }
@@ -32,7 +38,7 @@ class HashController extends HashBaseController
      *
      * @return HashStoreResource
      */
-    public function store(HashStoreRequest $request)
+    public function store(HashStoreRequest $request): HashStoreResource
     {
         DB::table('hashes')->insert([
             'name'       => $request->name,

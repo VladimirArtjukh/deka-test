@@ -21,11 +21,18 @@ class FilterService implements FilterInterface
      */
     public function filter(array $data)
     {
-        if (isset($data['hash']) && $data['hash'][0] != null) {
-            $hashPostId = DB::table('hash_post')->whereIn('hash_id', $data['hash'])->groupBy('post_id')->pluck('post_id');
-        } else {
-            $hashPostId = DB::table('posts')->pluck('id');
+        try {
+            if (isset($data['hash']) && $data['hash'][0] != null) {
+                $result = DB::table('hash_post')->whereIn('hash_id', $data['hash'])->groupBy('post_id')->pluck('post_id');
+            } else {
+                $result= DB::table('posts')->pluck('id');
+            }
+        } catch (\Exception $ex) {
+            $result = [
+                'errors' => ['error' => $ex->getMessage()]
+            ];
         }
-        return $hashPostId;
+
+        return $result;
     }
 }
